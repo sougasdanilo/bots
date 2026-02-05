@@ -1,0 +1,61 @@
+import keyboard
+import pyperclip
+from datetime import datetime
+import time
+import threading
+
+ultimo_valor_monetario = None
+clipboard_anterior = ""
+
+def monitorar_clipboard():
+    global clipboard_anterior, ultimo_valor_monetario
+
+    while True:
+        try:
+            conteudo = pyperclip.paste()
+
+            if conteudo != clipboard_anterior:
+                clipboard_anterior = conteudo
+
+                texto = conteudo.strip()
+                if texto.startswith("R$"):
+                    ultimo_valor_monetario = texto
+                    print(f"Valor monetário detectado: {ultimo_valor_monetario}")
+
+        except Exception:
+            pass
+
+        time.sleep(0.5)
+
+
+def colar_mensagem():
+    data_atual = datetime.now().strftime("%d/%m/%Y")
+    valor = ultimo_valor_monetario or "valor não informado"
+
+    mensagem = f"{data_atual} - {valor} a ser pago via Mercado Pago. Sheila."
+
+    pyperclip.copy(mensagem)
+    time.sleep(0.1)
+    keyboard.press_and_release("ctrl+v")
+
+
+def colar_venda_entrega():
+    texto = "venda e entrega de"
+    pyperclip.copy(texto)
+    time.sleep(0.1)
+    keyboard.press_and_release("ctrl+v")
+
+
+# thread para monitorar o clipboard
+thread_clipboard = threading.Thread(target=monitorar_clipboard, daemon=True)
+thread_clipboard.start()
+
+# atalhos
+keyboard.add_hotkey("ctrl+b", colar_mensagem)
+keyboard.add_hotkey("ctrl+i", colar_venda_entrega)
+
+print("Rodando...")
+print("Ctrl + B → mensagem com data e valor")
+print("Ctrl + I → 'venda e entrega de'")
+
+keyboard.wait()
