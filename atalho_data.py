@@ -3,6 +3,9 @@ import pyperclip
 from datetime import datetime
 import time
 import threading
+import sys
+import os
+import ctypes
 
 ultimo_valor_monetario = None
 clipboard_anterior = ""
@@ -59,3 +62,39 @@ print("Ctrl + B → mensagem com data e valor")
 print("Ctrl + I → 'venda e entrega de'")
 
 keyboard.wait()
+
+
+# Windows: garantir que exista uma janela de console ao rodar como .exe
+def _ensure_windows_console():
+    if os.name != 'nt':
+        return
+
+    kernel32 = ctypes.windll.kernel32
+    # Se não houver janela de console, aloca uma
+    try:
+        if kernel32.GetConsoleWindow() == 0:
+            kernel32.AllocConsole()
+            sys.stdout = open('CONOUT$', 'w', encoding='utf-8', buffering=1)
+            sys.stderr = open('CONOUT$', 'w', encoding='utf-8', buffering=1)
+            sys.stdin = open('CONIN$', 'r', encoding='utf-8')
+
+            # Handler para eventos do console (fechar, CTRL+C, etc.)
+            PHANDLER = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_uint)
+
+            def _console_handler(ctrl_type):
+                try:
+                    print('Encerrando pela janela do console...')
+                except Exception:
+                    pass
+                os._exit(0)
+                return True
+
+            handler = PHANDLER(_console_handler)
+            kernel32.SetConsoleCtrlHandler(handler, True)
+    except Exception:
+        # se algo falhar, não impede o funcionamento do app
+        pass
+
+
+# Chama a função para garantir console em Windows
+_ensure_windows_console()
