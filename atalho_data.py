@@ -35,7 +35,7 @@ def colar_mensagem():
     data_atual = datetime.now().strftime("%d/%m/%Y")
     valor = ultimo_valor_monetario or "valor não informado"
 
-    mensagem = f"{data_atual} - {valor} a ser pago via Mercado Pago. Sheila."
+    mensagem = f"{data_atual} - {valor} a ser pago via Mercado Pago. Sougás."
 
     pyperclip.copy(mensagem)
     time.sleep(0.1)
