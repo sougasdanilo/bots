@@ -162,12 +162,12 @@ def open_config_window():
 def setup_hotkeys():
     """Configura os atalhos de teclado em uma thread separada"""
     # Atalhos
-    keyboard.add_hotkey("ctrl+b", colar_mensagem)
-    keyboard.add_hotkey("ctrl+i", colar_venda_entrega)
+    keyboard.add_hotkey("ctrl+q", colar_mensagem)
+    keyboard.add_hotkey("ctrl+y", colar_venda_entrega)
     
     print("Atalhos configurados!")
-    print("Ctrl + B → mensagem com data e valor")
-    print("Ctrl + I → venda e entrega de")
+    print("Ctrl + Q → mensagem com data e valor")
+    print("Ctrl + Y → venda e entrega de")
     print()
     
     keyboard.wait()
